@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: OBS Documentation
+    url: https://obsproject.com/docs
+    about: Check the official documentation for guides and API reference
+  - name: OBS Forum
+    url: https://obsproject.com/forum
+    about: Ask questions and get help from the community
+  - name: OBS Discord
+    url: https://obsproject.com/discord
+    about: Join the OBS Discord for real-time discussions

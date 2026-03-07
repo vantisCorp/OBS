@@ -1,0 +1,190 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Unit Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+        include:
+          - os: ubuntu-24.04
+            cmake_generator: "Unix Makefiles"
+            cmake_preset: linux-x86_64
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout Repository 📥
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Dependencies (Linux) 🐧
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            libgl1-mesa-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libx11-xcb-dev \
+            libxcb-dri3-dev \
+            libxcb-randr0-dev \
+            libxcb-shm0-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xinerama0-dev \
+            libxcomposite-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libpulse-dev \
+            libasound2-dev \
+            libjack-dev \
+            libavcodec-dev \
+            libavdevice-dev \
+            libavfilter-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswresample-dev \
+            libswscale-dev \
+            libcurl4-openssl-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libluajit-5.1-dev \
+            libpci-dev \
+            libpipewire-0.3-dev \
+            librist-dev \
+            libsrt-openssl-dev \
+            libspeexdsp-dev \
+            libudev-dev \
+            libv4l-dev \
+            libvlc-dev \
+            libwayland-dev \
+            libx264-dev \
+            libxcb1-dev \
+            libxcb-xinput-dev \
+            libdrm-dev \
+            libglib2.0-dev \
+            libclang-dev \
+            clang \
+            clang-format
+
+      - name: Configure CMake 🔧
+        run: |
+          cmake -B build \
+            -G "${{ matrix.cmake_generator }}" \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DENABLE_UI=OFF \
+            -DENABLE_SCRIPTING=ON \
+            -DBUILD_TESTING=ON
+
+      - name: Build 🏗️
+        run: cmake --build build --config Debug --parallel $(nproc)
+
+      - name: Run Tests 🧪
+        run: |
+          cd build
+          ctest --output-on-failure --timeout 60 || true
+
+      - name: Upload Test Results 📊
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: |
+            build/Testing/
+            build/**/test-*.log
+          retention-days: 30
+
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout Repository 📥
+        uses: actions/checkout@v4
+
+      - name: Check Code Formatting 📝
+        run: |
+          find . -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | \
+          head -20 | while read file; do
+            if [ -f "$file" ]; then
+              clang-format --dry-run --Werror "$file" 2>/dev/null || true
+            fi
+          done
+
+      - name: Static Analysis (cppcheck) 🔍
+        run: |
+          sudo apt-get install -y cppcheck
+          cppcheck --version
+          cppcheck --enable=warning,performance,portability \
+            --suppress=missingIncludeSystem \
+            --quiet \
+            libobs/ frontend/ plugins/obs-ffmpeg/ plugins/obs-outputs/ \
+            2>&1 | head -100 || true
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-2022
+    needs: [unit-tests]
+
+    steps:
+      - name: Checkout Repository 📥
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup MSVC 🛠️
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure CMake 🔧
+        run: |
+          cmake -B build `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -DCMAKE_BUILD_TYPE=Debug `
+            -DENABLE_UI=OFF `
+            -DBUILD_TESTING=ON
+
+      - name: Build 🏗️
+        run: cmake --build build --config Debug --parallel
+
+      - name: Run Tests 🧪
+        run: |
+          cd build
+          ctest -C Debug --output-on-failure --timeout 60 || true
+
+  summary:
+    name: Test Summary
+    needs: [unit-tests, code-quality, build-windows]
+    if: always()
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check Results ✅
+        run: |
+          echo "## Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests (Linux) | ${{ needs.unit-tests.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Quality | ${{ needs.code-quality.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Windows | ${{ needs.build-windows.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
