@@ -2687,6 +2687,10 @@ PublisherAuth(RTMP *r, AVal *description)
     char salted2[SALTED2_LEN];
     AVal pubToken;
 
+    /* Guard against null description pointer */
+    if (!description || !description->av_val || description->av_len <= 0)
+        return 0;
+
     if (strstr(description->av_val, av_authmod_adobe.av_val) != NULL)
     {
         if(strstr(description->av_val, "code=403 need auth") != NULL)
@@ -3288,9 +3292,11 @@ HandleInvoke(RTMP *r, const char *body, unsigned int nBodySize)
                 AMFProp_GetString(AMF_GetProp(&obj2, &av_code, -1), &code);
                 AMFProp_GetString(AMF_GetProp(&obj2, &av_level, -1), &level);
                 AMFProp_GetString(AMF_GetProp(&obj2, &av_description, -1), &description);
-                RTMP_Log(RTMP_LOGDEBUG, "%s, error description: %s", __FUNCTION__, description.av_val);
+                RTMP_Log(RTMP_LOGDEBUG, "%s, error description: %s", __FUNCTION__,
+                         description.av_val ? description.av_val : "(null)");
                 /* if PublisherAuth returns 1, then reconnect */
-                if (PublisherAuth(r, &description) == 1)
+                /* Check if description is present before calling PublisherAuth to avoid null pointer dereference */
+                if (description.av_val && description.av_len > 0 && PublisherAuth(r, &description) == 1)
                 {
                     RTMP_Close(r);
                     if (r->Link.pFlags & RTMP_PUB_CLATE)
