@@ -29,7 +29,7 @@ jobs:
   compatibility-validation:
     name: Validate Compatibility 🕵️
     if: github.ref_name == 'master'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       checks: write
     steps:
@@ -53,7 +53,7 @@ jobs:
   services-validation:
     name: Validate Services 🕵️
     if: github.ref_name == 'master'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       checks: write
     steps:
@@ -79,7 +79,7 @@ jobs:
   update-documentation:
     name: Update Documentation 📖
     if: github.repository_owner == 'obsproject' && (github.ref_name == 'master' || github.ref_type == 'tag')
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -101,7 +101,7 @@ jobs:
   deploy-documentation:
     name: Deploy Documentation to Cloudflare ☁️
     if: github.repository_owner == 'obsproject' && github.ref_type == 'tag'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: update-documentation
     defaults:
       run:
@@ -139,7 +139,7 @@ jobs:
   create-appcast:
     name: Create Sparkle Appcast 🎙️
     if: github.repository_owner == 'obsproject' && github.ref_type == 'tag'
-    runs-on: macos-15
+    runs-on: macos-latest
     needs: build-project
     strategy:
       fail-fast: false
@@ -195,7 +195,7 @@ jobs:
           path: ${{ github.workspace }}/output
 
   merge-appcasts:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: create-appcast
     steps:
       - name: Merge Appcasts
@@ -219,7 +219,7 @@ jobs:
   create-release:
     name: Create Release 🛫
     if: github.ref_type == 'tag'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [build-project, sign-windows-build]
     defaults:
       run:
@@ -263,9 +263,9 @@ jobs:
           macos_arm64_dsym_artifact_name="obs-studio-macos-arm64-${commit_hash}-dSYMs"
           macos_intel_artifact_name="obs-studio-macos-x86_64-${commit_hash}"
           macos_intel_dsym_artifact_name="obs-studio-macos-x86_64-${commit_hash}-dSYMs"
-          ubuntu_2404_x86_64_artifact_name="obs-studio-ubuntu-24.04-x86_64-${commit_hash}"
-          ubuntu_2404_x86_64_debug_name="obs-studio-ubuntu-24.04-x86_64-${commit_hash}-dbgsym"
-          ubuntu_2404_sources_name="obs-studio-ubuntu-24.04-sources-${commit_hash}"
+          ubuntu_2404_x86_64_artifact_name="obs-studio-ubuntu-latest-x86_64-${commit_hash}"
+          ubuntu_2404_x86_64_debug_name="obs-studio-ubuntu-latest-x86_64-${commit_hash}-dbgsym"
+          ubuntu_2404_sources_name="obs-studio-ubuntu-latest-sources-${commit_hash}"
           windows_x64_artifact_name="obs-studio-windows-x64-${{ steps.check.outputs.version }}-signed"
           windows_x64_installer_name="obs-studio-windows-x64-${{ steps.check.outputs.version }}-installer"
           windows_x64_debug_name="obs-studio-windows-x64-${{ steps.check.outputs.version }}-pdbs"

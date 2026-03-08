@@ -144,7 +144,7 @@ jobs:
 
   build-windows:
     name: Build Windows
-    runs-on: windows-2022
+    runs-on: windows-latest
     needs: [unit-tests]
 
     steps:

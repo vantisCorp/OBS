@@ -16,7 +16,7 @@ jobs:
   check-tag:
     name: Check Release Tag
     if: github.repository_owner == 'obsproject'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     outputs:
       validTag: ${{ steps.check.outputs.validTag }}
       flatpakMatrix: ${{ steps.check.outputs.flatpakMatrix }}
@@ -72,7 +72,7 @@ jobs:
     name: Flathub 📦
     needs: check-tag
     if: github.repository_owner == 'obsproject' && fromJSON(needs.check-tag.outputs.validTag)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
@@ -230,7 +230,7 @@ jobs:
     name: Upload Steam Builds 🚂
     needs: check-tag
     if: github.repository_owner == 'obsproject' && fromJSON(needs.check-tag.outputs.validTag)
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/steam-upload
@@ -246,7 +246,7 @@ jobs:
     name: Create Windows Patches 🩹
     needs: check-tag
     if: github.repository_owner == 'obsproject' && fromJSON(needs.check-tag.outputs.validTag)
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/windows-patches
