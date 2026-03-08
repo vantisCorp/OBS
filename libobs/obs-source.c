@@ -30,6 +30,7 @@
 
 #include "obs.h"
 #include "obs-internal.h"
+#include "util/source-cache.h"
 
 #define get_weak(source) ((obs_weak_source_t *)source->context.control)
 
@@ -2905,29 +2906,34 @@ static const char *get_type_format(enum obs_source_type type)
 
 static inline void render_video(obs_source_t *source)
 {
-	if (source->info.type != OBS_SOURCE_TYPE_FILTER && (source->info.output_flags & OBS_SOURCE_VIDEO) == 0) {
+	/* Cache source properties for hot path optimization */
+	source_cached_props_t cache;
+	source_cache_props(source, &cache);
+
+	/* Use cached values for early exit checks */
+	if (!cache.is_filter && !cache.has_video) {
 		if (source->filter_parent)
 			obs_source_skip_video_filter(source);
 		return;
 	}
 
-	if (source->info.type == OBS_SOURCE_TYPE_INPUT && (source->info.output_flags & OBS_SOURCE_ASYNC) != 0 &&
-	    !source->rendering_filter) {
+	/* Async video update check using cached properties */
+	if (cache.async_source && !source->rendering_filter) {
 		if (deinterlacing_enabled(source))
 			deinterlace_update_async_video(source);
 		obs_source_update_async_video(source);
 	}
 
-	if (!source->context.data || !source->enabled) {
+	if (!source->context.data || cache.removed || !cache.enabled) {
 		if (source->filter_parent)
 			obs_source_skip_video_filter(source);
 		return;
 	}
 
-	GS_DEBUG_MARKER_BEGIN_FORMAT(GS_DEBUG_COLOR_SOURCE, get_type_format(source->info.type),
+	GS_DEBUG_MARKER_BEGIN_FORMAT(GS_DEBUG_COLOR_SOURCE, get_type_format(cache.type),
 				     obs_source_get_name(source));
 
-	if (source->filters.num && !source->rendering_filter)
+	if (source_has_filters(source, &cache))
 		obs_source_render_filters(source);
 
 	else if (source->info.video_render)

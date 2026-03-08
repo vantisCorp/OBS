@@ -55,8 +55,18 @@ target_include_directories(test_obs_output PRIVATE ${CMOCKA_INCLUDE_DIR})
 target_link_libraries(test_obs_output PRIVATE OBS::libobs ${CMOCKA_LIBRARIES})
 add_test(test_obs_output ${CMAKE_CURRENT_BINARY_DIR}/test_obs_output)
 
+# =============================================================================
+# New Tests - vantisCorp Phase 4
+# =============================================================================
+
+# source-cache test - cached source properties for hot path optimization
+add_executable(test_source_cache test_source_cache.c)
+target_include_directories(test_source_cache PRIVATE ${CMOCKA_INCLUDE_DIR})
+target_link_libraries(test_source_cache PRIVATE OBS::libobs ${CMOCKA_LIBRARIES})
+add_test(test_source_cache ${CMAKE_CURRENT_BINARY_DIR}/test_source_cache)
+
 # Set test properties
-set_tests_properties(test_obs_data test_obs_source test_obs_output
+set_tests_properties(test_obs_data test_obs_source test_obs_output test_source_cache
         PROPERTIES
         TIMEOUT 60
         LABELS "unit"
