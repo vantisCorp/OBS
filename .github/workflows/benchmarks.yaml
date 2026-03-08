@@ -20,7 +20,7 @@ permissions:
 jobs:
   build-benchmarks:
     name: Build Benchmarks
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository 📥
@@ -103,7 +103,7 @@ jobs:
     name: Performance Analysis
     needs: build-benchmarks
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Download Results 📥
@@ -128,7 +128,7 @@ jobs:
     name: Benchmark Summary
     needs: [build-benchmarks, performance-alert]
     if: always()
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Final Summary ✅
