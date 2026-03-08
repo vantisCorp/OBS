@@ -18,6 +18,7 @@
 #include <inttypes.h>
 #include "obs-internal.h"
 #include "util/util_uint64.h"
+#include "util/audio-mixing.h"
 
 struct ts_info {
 	uint64_t start;
@@ -106,15 +107,11 @@ static inline void mix_audio(struct audio_output_data *mixes, obs_source_t *sour
 
 	for (size_t mix_idx = 0; mix_idx < MAX_AUDIO_MIXES; mix_idx++) {
 		for (size_t ch = 0; ch < channels; ch++) {
-			register float *mix = mixes[mix_idx].data[ch];
-			register float *aud = source->audio_output_buf[mix_idx][ch];
-			register float *end;
+			float *mix = mixes[mix_idx].data[ch];
+			float *aud = source->audio_output_buf[mix_idx][ch];
 
-			mix += start_point;
-			end = aud + total_floats;
-
-			while (aud < end)
-				*(mix++) += *(aud++);
+			/* Use SIMD-optimized mixing function */
+			audio_mix_float_simd(mix + start_point, aud, total_floats);
 		}
 	}
 }
