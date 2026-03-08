@@ -37,6 +37,11 @@ jobs:
             libpulse-dev \
             libasound2-dev
 
+      - name: Install SIMDe 📦
+        run: |
+          git clone --depth 1 https://github.com/simd-everywhere/simde-no-dependencies.git /tmp/simde
+          sudo cp -r /tmp/simde/simde /usr/local/include/
+
       - name: Configure with ASan 🔧
         run: |
           cmake -B build \
@@ -82,6 +87,11 @@ jobs:
             libpulse-dev \
             libasound2-dev
 
+      - name: Install SIMDe 📦
+        run: |
+          git clone --depth 1 https://github.com/simd-everywhere/simde-no-dependencies.git /tmp/simde
+          sudo cp -r /tmp/simde/simde /usr/local/include/
+
       - name: Configure with UBSan 🔧
         run: |
           cmake -B build \
@@ -126,6 +136,11 @@ jobs:
             libx11-dev \
             libpulse-dev \
             libasound2-dev
+
+      - name: Install SIMDe 📦
+        run: |
+          git clone --depth 1 https://github.com/simd-everywhere/simde-no-dependencies.git /tmp/simde
+          sudo cp -r /tmp/simde/simde /usr/local/include/
 
       - name: Configure with TSan 🔧
         run: |
