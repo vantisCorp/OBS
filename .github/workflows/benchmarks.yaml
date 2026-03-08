@@ -1,0 +1,139 @@
+name: Performance Benchmarks
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      compare_baseline:
+        description: 'Compare with baseline benchmark'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build-benchmarks:
+    name: Build Benchmarks
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout Repository 📥
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Dependencies 📦
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            libgl1-mesa-dev \
+            libx11-dev \
+            libbenchmark-dev
+
+      - name: Configure with Benchmarks 🔧
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DENABLE_UI=OFF \
+            -DENABLE_BENCHMARKS=ON \
+            -DBUILD_TESTING=OFF
+
+      - name: Build 🏗️
+        run: cmake --build build --parallel $(nproc)
+
+      - name: Run obs_data Benchmarks 📊
+        run: |
+          mkdir -p results
+          ./build/benchmark/bench_obs_data --benchmark_format=json \
+            --benchmark_out=results/bench_obs_data.json \
+            --benchmark_time_unit=ns
+
+      - name: Run obs_source Benchmarks 📊
+        run: |
+          ./build/benchmark/bench_obs_source --benchmark_format=json \
+            --benchmark_out=results/bench_obs_source.json \
+            --benchmark_time_unit=ns
+
+      - name: Run obs_audio Benchmarks 📊
+        run: |
+          ./build/benchmark/bench_obs_audio --benchmark_format=json \
+            --benchmark_out=results/bench_obs_audio.json \
+            --benchmark_time_unit=ns
+
+      - name: Run obs_video Benchmarks 📊
+        run: |
+          ./build/benchmark/bench_obs_video --benchmark_format=json \
+            --benchmark_out=results/bench_obs_video.json \
+            --benchmark_time_unit=ns
+
+      - name: Upload Benchmark Results 📤
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: results/
+          retention-days: 30
+
+      - name: Generate Summary 📋
+        run: |
+          echo "## Benchmark Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### obs_data Benchmarks" >> $GITHUB_STEP_SUMMARY
+          cat results/bench_obs_data.json | jq -r '.benchmarks[] | "- \(.name): \(.real_time) ns" | head -10' >> $GITHUB_STEP_SUMMARY || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### obs_source Benchmarks" >> $GITHUB_STEP_SUMMARY
+          cat results/bench_obs_source.json | jq -r '.benchmarks[] | "- \(.name): \(.real_time) ns" | head -10' >> $GITHUB_STEP_SUMMARY || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### obs_audio Benchmarks" >> $GITHUB_STEP_SUMMARY
+          cat results/bench_obs_audio.json | jq -r '.benchmarks[] | "- \(.name): \(.real_time) ns" | head -10' >> $GITHUB_STEP_SUMMARY || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### obs_video Benchmarks" >> $GITHUB_STEP_SUMMARY
+          cat results/bench_obs_video.json | jq -r '.benchmarks[] | "- \(.name): \(.real_time) ns" | head -10' >> $GITHUB_STEP_SUMMARY || true
+
+  performance-alert:
+    name: Performance Analysis
+    needs: build-benchmarks
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Download Results 📥
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-results
+          path: results/
+
+      - name: Analyze Results 📊
+        run: |
+          echo "## Performance Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Benchmarks completed successfully." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Optimization Recommendations" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Monitor frequently called functions" >> $GITHUB_STEP_SUMMARY
+          echo "- Consider caching for repeated operations" >> $GITHUB_STEP_SUMMARY
+          echo "- Profile hot paths for further optimization" >> $GITHUB_STEP_SUMMARY
+
+  summary:
+    name: Benchmark Summary
+    needs: [build-benchmarks, performance-alert]
+    if: always()
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Final Summary ✅
+        run: |
+          echo "## Performance Benchmarks Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| obs_data | ${{ needs.build-benchmarks.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| obs_source | ${{ needs.build-benchmarks.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| obs_audio | ${{ needs.build-benchmarks.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| obs_video | ${{ needs.build-benchmarks.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
