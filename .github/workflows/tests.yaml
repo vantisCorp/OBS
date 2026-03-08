@@ -92,8 +92,7 @@ jobs:
       - name: Install SIMDe 📦
         if: runner.os == 'Linux'
         run: |
-          git clone --depth 1 https://github.com/simd-everywhere/simde-no-dependencies.git /tmp/simde
-          sudo cp -r /tmp/simde/simde /usr/local/include/
+          sudo apt-get install -y libsimde-dev
 
       - name: Configure CMake 🔧
         run: |

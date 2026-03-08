@@ -31,21 +31,12 @@ jobs:
             cmake \
             clang \
             extra-cmake-modules \
+            libsimde-dev \
             pkg-config \
             libgl1-mesa-dev \
             libx11-dev \
             libpulse-dev \
             libasound2-dev
-
-      - name: Install SIMDe 📦
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api --header "Accept: application/vnd.github+raw" \
-            repos/simd-everywhere/simde-no-dependencies/tarball/master > /tmp/simde.tar.gz
-          tar -xzf /tmp/simde.tar.gz -C /tmp
-          sudo mkdir -p /usr/local/include
-          sudo cp -r /tmp/simd-everywhere-simde-no-dependencies-*/simde /usr/local/include/
 
       - name: Configure with ASan 🔧
         run: |
@@ -86,21 +77,12 @@ jobs:
             cmake \
             clang \
             extra-cmake-modules \
+            libsimde-dev \
             pkg-config \
             libgl1-mesa-dev \
             libx11-dev \
             libpulse-dev \
             libasound2-dev
-
-      - name: Install SIMDe 📦
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api --header "Accept: application/vnd.github+raw" \
-            repos/simd-everywhere/simde-no-dependencies/tarball/master > /tmp/simde.tar.gz
-          tar -xzf /tmp/simde.tar.gz -C /tmp
-          sudo mkdir -p /usr/local/include
-          sudo cp -r /tmp/simd-everywhere-simde-no-dependencies-*/simde /usr/local/include/
 
       - name: Configure with UBSan 🔧
         run: |
@@ -141,21 +123,12 @@ jobs:
             cmake \
             clang \
             extra-cmake-modules \
+            libsimde-dev \
             pkg-config \
             libgl1-mesa-dev \
             libx11-dev \
             libpulse-dev \
             libasound2-dev
-
-      - name: Install SIMDe 📦
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api --header "Accept: application/vnd.github+raw" \
-            repos/simd-everywhere/simde-no-dependencies/tarball/master > /tmp/simde.tar.gz
-          tar -xzf /tmp/simde.tar.gz -C /tmp
-          sudo mkdir -p /usr/local/include
-          sudo cp -r /tmp/simd-everywhere-simde-no-dependencies-*/simde /usr/local/include/
 
       - name: Configure with TSan 🔧
         run: |
