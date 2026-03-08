@@ -43,8 +43,9 @@ jobs:
 
       - name: Install SIMDe 📦
         run: |
-          git clone --depth 1 https://github.com/simd-everywhere/simde-no-dependencies.git /tmp/simde
-          sudo cp -r /tmp/simde/simde /usr/local/include/
+          curl -L -o /tmp/simde.tar.gz https://github.com/simd-everywhere/simde-no-dependencies/archive/refs/heads/master.tar.gz
+          tar -xzf /tmp/simde.tar.gz -C /tmp
+          sudo cp -r /tmp/simde-no-dependencies-master/simde /usr/local/include/
 
       - name: Configure with Benchmarks 🔧
         run: |
