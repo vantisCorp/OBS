@@ -1,6 +1,9 @@
 /*
  * Memory Pool for High-Performance Allocations
  * vantisCorp fork - Phase 3 Performance Improvements
+ * 
+ * FIXED VERSION: Removed static global from header to prevent 
+ * multiple definition errors during linking.
  *
  * Provides pre-allocated memory pools to avoid allocation overhead
  * in hot paths like video/audio processing.
@@ -34,8 +37,15 @@ struct mem_pool_manager {
     size_t default_pool_size;
 };
 
-/* Global pool manager instance */
-static struct mem_pool_manager g_pool_mgr = {0};
+/**
+ * Get the global pool manager instance
+ * @return Pointer to global pool manager
+ */
+static inline struct mem_pool_manager *mem_pool_get_manager(void)
+{
+    static struct mem_pool_manager instance = {0};
+    return &instance;
+}
 
 /**
  * Initialize the memory pool system
@@ -44,13 +54,15 @@ static struct mem_pool_manager g_pool_mgr = {0};
  */
 static inline int mem_pool_init(size_t default_pool_size)
 {
-    if (g_pool_mgr.pool_count > 0)
+    struct mem_pool_manager *mgr = mem_pool_get_manager();
+    
+    if (mgr->pool_count > 0)
         return -1;  /* Already initialized */
 
-    g_pool_mgr.default_pool_size = default_pool_size > 0 
+    mgr->default_pool_size = default_pool_size > 0 
         ? default_pool_size 
         : MEM_POOL_DEFAULT_SIZE;
-    g_pool_mgr.pool_count = 0;
+    mgr->pool_count = 0;
 
     return 0;
 }
@@ -62,15 +74,17 @@ static inline int mem_pool_init(size_t default_pool_size)
  */
 static inline struct mem_pool *mem_pool_create(size_t size)
 {
-    if (g_pool_mgr.pool_count >= MEM_POOL_MAX_POOLS)
+    struct mem_pool_manager *mgr = mem_pool_get_manager();
+    
+    if (mgr->pool_count >= MEM_POOL_MAX_POOLS)
         return NULL;
 
-    struct mem_pool *pool = bzalloc(sizeof(struct mem_pool));
+    struct mem_pool *pool = (struct mem_pool *)bzalloc(sizeof(struct mem_pool));
     if (!pool)
         return NULL;
 
-    pool->size = size > 0 ? size : g_pool_mgr.default_pool_size;
-    pool->base = bzalloc(pool->size);
+    pool->size = size > 0 ? size : mgr->default_pool_size;
+    pool->base = (uint8_t *)bzalloc(pool->size);
     
     if (!pool->base) {
         bfree(pool);
@@ -81,7 +95,7 @@ static inline struct mem_pool *mem_pool_create(size_t size)
     pool->peak = 0;
     pool->next = NULL;
 
-    g_pool_mgr.pools[g_pool_mgr.pool_count++] = pool;
+    mgr->pools[mgr->pool_count++] = pool;
     
     return pool;
 }
@@ -133,10 +147,12 @@ static inline void mem_pool_destroy(struct mem_pool *pool)
     if (!pool)
         return;
 
+    struct mem_pool_manager *mgr = mem_pool_get_manager();
+    
     /* Remove from manager */
-    for (size_t i = 0; i < g_pool_mgr.pool_count; i++) {
-        if (g_pool_mgr.pools[i] == pool) {
-            g_pool_mgr.pools[i] = g_pool_mgr.pools[--g_pool_mgr.pool_count];
+    for (size_t i = 0; i < mgr->pool_count; i++) {
+        if (mgr->pools[i] == pool) {
+            mgr->pools[i] = mgr->pools[--mgr->pool_count];
             break;
         }
     }
@@ -170,16 +186,18 @@ static inline void mem_pool_stats(struct mem_pool *pool,
  */
 static inline void *mem_pool_global_alloc(size_t size)
 {
+    struct mem_pool_manager *mgr = mem_pool_get_manager();
+    
     /* Try each pool in order */
-    for (size_t i = 0; i < g_pool_mgr.pool_count; i++) {
-        void *ptr = mem_pool_alloc(g_pool_mgr.pools[i], size);
+    for (size_t i = 0; i < mgr->pool_count; i++) {
+        void *ptr = mem_pool_alloc(mgr->pools[i], size);
         if (ptr)
             return ptr;
     }
     
     /* No pool has space, create new one */
     struct mem_pool *new_pool = mem_pool_create(
-        size > g_pool_mgr.default_pool_size ? size : g_pool_mgr.default_pool_size
+        size > mgr->default_pool_size ? size : mgr->default_pool_size
     );
     
     if (!new_pool)
@@ -193,8 +211,10 @@ static inline void *mem_pool_global_alloc(size_t size)
  */
 static inline void mem_pool_cleanup(void)
 {
-    while (g_pool_mgr.pool_count > 0) {
-        mem_pool_destroy(g_pool_mgr.pools[0]);
+    struct mem_pool_manager *mgr = mem_pool_get_manager();
+    
+    while (mgr->pool_count > 0) {
+        mem_pool_destroy(mgr->pools[0]);
     }
 }
 
