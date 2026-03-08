@@ -13,6 +13,10 @@ on:
         default: false
         type: boolean
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   build-benchmarks:
     name: Build Benchmarks
