@@ -57,10 +57,14 @@ jobs:
             libgl1-mesa-dev libx11-dev libpulse-dev libasound2-dev
 
       - name: Install SIMDe
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          curl -L -o /tmp/simde.tar.gz https://github.com/simd-everywhere/simde-no-dependencies/archive/refs/heads/master.tar.gz
+          gh api --header "Accept: application/vnd.github+raw" \
+            repos/simd-everywhere/simde-no-dependencies/tarball/master > /tmp/simde.tar.gz
           tar -xzf /tmp/simde.tar.gz -C /tmp
-          sudo cp -r /tmp/simde-no-dependencies-master/simde /usr/local/include/
+          sudo mkdir -p /usr/local/include
+          sudo cp -r /tmp/simd-everywhere-simde-no-dependencies-*/simde /usr/local/include/
 
       - name: Configure
         run: cmake -B build -DENABLE_UI=OFF -DBUILD_TESTING=ON
