@@ -5,6 +5,47 @@ All notable changes to this fork will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [32.0.4-vantis.9] - 2026-03-08
+
+### Added
+- **CI/CD Documentation**: Added `docs/CI-CD-REQUIREMENTS.md` explaining billing requirements
+- **Minimal CI Workflow**: Added `.github/workflows/ci-minimal.yaml` with status reporting
+
+### Changed
+- **Workflow Runners**: Updated all workflows to use `*-latest` runners
+  - `ubuntu-24.04` → `ubuntu-latest`
+  - `macos-15` → `macos-latest`
+  - `windows-2022` → `windows-latest`
+- **Xcode Version**: Updated from non-existent `Xcode_26.1` to `Xcode_15.2`
+- **README**: Updated for vantisCorp fork with links to upstream
+
+### Fixed
+- **Source Render Cache**: Added missing `memory-pool-fixed.h` and test files
+
+### Documentation
+- Documented that private repos require GitHub Pro/Team for Actions
+- Added solutions: upgrade plan, make public, or self-hosted runners
+
+## [32.0.4-vantis.8] - 2026-03-08
+
+### Added
+- **Source Render Cache**: Cached source properties for hot path optimization
+- **Unit Tests**: 25 CMocka tests for source cache
+
+### Changed
+- Integrated cache into `render_video()` in `libobs/obs-source.c`
+
+## [32.0.4-vantis.7] - 2026-03-08
+
+### Added
+- **Lock-Free SPSC Queue**: Single producer single consumer queue using atomics
+- **Unit Tests**: 11 tests including multi-threaded producer-consumer
+
+## [32.0.4-vantis.6] - 2026-03-08
+
+### Added
+- **SIMD Audio Integration**: Integrated SIMD into `mix_audio()` hot path
+
 ## [32.0.4-vantis.5] - 2026-03-08
 
 ### Added
