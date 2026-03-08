@@ -32,6 +32,7 @@ jobs:
             clang \
             extra-cmake-modules \
             libsimde-dev \
+            uthash-dev \
             pkg-config \
             libgl1-mesa-dev \
             libx11-dev \
@@ -79,6 +80,7 @@ jobs:
             clang \
             extra-cmake-modules \
             libsimde-dev \
+            uthash-dev \
             pkg-config \
             libgl1-mesa-dev \
             libx11-dev \
@@ -126,6 +128,7 @@ jobs:
             clang \
             extra-cmake-modules \
             libsimde-dev \
+            uthash-dev \
             pkg-config \
             libgl1-mesa-dev \
             libx11-dev \
