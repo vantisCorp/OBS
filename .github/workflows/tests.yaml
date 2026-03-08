@@ -44,7 +44,6 @@ jobs:
             cmake \
             extra-cmake-modules \
             pkg-config \
-            simde-dev \
             libgl1-mesa-dev \
             libglu1-mesa-dev \
             libx11-dev \
@@ -89,6 +88,12 @@ jobs:
             libclang-dev \
             clang \
             clang-format
+
+      - name: Install SIMDe 📦
+        if: runner.os == 'Linux'
+        run: |
+          git clone --depth 1 https://github.com/simd-everywhere/simde-no-dependencies.git /tmp/simde
+          sudo cp -r /tmp/simde/simde /usr/local/include/
 
       - name: Configure CMake 🔧
         run: |
