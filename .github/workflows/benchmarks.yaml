@@ -38,6 +38,7 @@ jobs:
             extra-cmake-modules \
             libsimde-dev \
             uthash-dev \
+            libjansson-dev \
             pkg-config \
             libgl1-mesa-dev \
             libx11-dev \
