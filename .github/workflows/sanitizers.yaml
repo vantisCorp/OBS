@@ -78,7 +78,8 @@ jobs:
             libxcb1-dev \
             libdrm-dev \
             libglib2.0-dev \
-            libclang-dev
+            libclang-dev \
+            libva-dev
 
       - name: Configure with ASan 🔧
         run: |
@@ -172,7 +173,8 @@ jobs:
             libxcb1-dev \
             libdrm-dev \
             libglib2.0-dev \
-            libclang-dev
+            libclang-dev \
+            libva-dev
 
       - name: Configure with UBSan 🔧
         run: |
@@ -266,7 +268,8 @@ jobs:
             libxcb1-dev \
             libdrm-dev \
             libglib2.0-dev \
-            libclang-dev
+            libclang-dev \
+            libva-dev
 
       - name: Configure with TSan 🔧
         run: |
