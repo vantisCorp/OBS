@@ -98,7 +98,8 @@ jobs:
             -DENABLE_DECKLINK=OFF \
             -DENABLE_NVENC=OFF \
             -DENABLE_QSV11=OFF \
-            -DENABLE_VST=OFF
+            -DENABLE_VST=OFF \
+            -DENABLE_WEBRTC=OFF
 
       - name: Build 🏗️
         run: cmake --build build --parallel $(nproc)
