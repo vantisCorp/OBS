@@ -9,6 +9,7 @@
 
 #include <obs-module.h>
 #include <graphics/graphics.h>
+#include <graphics/matrix4.h>
 
 // =============================================================================
 // Video format operations
