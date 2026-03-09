@@ -103,7 +103,8 @@ jobs:
             libxcb1-dev \
             libdrm-dev \
             libglib2.0-dev \
-            libclang-dev
+            libclang-dev \
+            libva-dev \
         
       - name: Configure
         run: cmake -B build -DENABLE_UI=OFF -DBUILD_TESTING=ON -DENABLE_AJA=OFF -DENABLE_DECKLINK=OFF

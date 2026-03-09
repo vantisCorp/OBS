@@ -84,6 +84,7 @@ jobs:
             libdrm-dev \
             libglib2.0-dev \
             libclang-dev \
+            libva-dev \
             libbenchmark-dev
 
       - name: Configure with Benchmarks 🔧

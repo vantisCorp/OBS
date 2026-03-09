@@ -87,6 +87,7 @@ jobs:
             libdrm-dev \
             libglib2.0-dev \
             libclang-dev \
+            libva-dev \
             clang \
             clang-format
 
