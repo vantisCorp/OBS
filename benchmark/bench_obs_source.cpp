@@ -129,7 +129,7 @@ BENCHMARK(BM_audio_data_init);
 // =============================================================================
 
 static void BM_source_property_string(benchmark::State& state) {
-    const char *prop_name = "test_property";
+    const char *prop_name = "test_property"; (void)prop_name;
     const char *prop_value = "test_value_1234567890";
 
     for (auto _ : state) {
@@ -149,7 +149,7 @@ static void BM_obs_source_rect_calc(benchmark::State& state) {
     struct vec2 scale = {1.0f, 1.0f};
     float rotation = 0.0f;
     uint32_t width = 1920;
-    uint32_t height = 1080;
+    uint32_t height = 1080; (void)height;
 
     for (auto _ : state) {
         // Simulate transform calculation

@@ -100,9 +100,8 @@ static void BM_obs_data_to_json(benchmark::State& state) {
     obs_data_set_double(data, "ratio", 3.14159);
 
     for (auto _ : state) {
-        char *json = obs_data_get_json(data);
+        const char *json = obs_data_get_json(data);
         benchmark::DoNotOptimize(json);
-        bfree(json);
     }
 
     obs_data_release(data);
@@ -202,9 +201,8 @@ static void BM_obs_data_large_json(benchmark::State& state) {
     }
 
     for (auto _ : state) {
-        char *json = obs_data_get_json(data);
+        const char *json = obs_data_get_json(data);
         benchmark::DoNotOptimize(json);
-        bfree(json);
     }
 
     obs_data_release(data);
