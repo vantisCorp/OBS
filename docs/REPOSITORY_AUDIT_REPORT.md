@@ -73,7 +73,39 @@ This report covers a full A-to-Z audit of the vantisCorp OBS Studio fork reposit
 | PR Pull | pr-pull.yaml | ✅ Active | PR format checks |
 | Sign Windows | sign-windows.yaml | ✅ Active | Windows signing |
 
-### 3.2 Issues Fixed in PR #15
+### 3.2 Final CI Results (PR #15)
+
+| Check | Status |
+|-------|--------|
+| Unit Tests (ubuntu-latest) | ✅ Pass |
+| Format / clang-format | ✅ Pass |
+| Format / gersemi | ✅ Pass |
+| Format / qt-xml-validator | ✅ Pass |
+| Format / swift-format | ✅ Pass |
+| Format / flatpak-validator | ✅ Pass |
+| CodeQL (C++) | ✅ Pass |
+| CodeQL (Python) | ✅ Pass |
+| Dependency Review | ✅ Pass |
+| Address Sanitizer (Linux) | ✅ Pass |
+| Thread Sanitizer (Linux) | ✅ Pass |
+| Undefined Behavior Sanitizer (Linux) | ✅ Pass |
+| Build Benchmarks | ✅ Pass |
+| Build Linux | ✅ Pass |
+| Build Ubuntu | ✅ Pass |
+| Build Windows (x64) | ✅ Pass |
+| Build Windows (arm64) | ✅ Pass |
+| Build macOS (arm64) | ✅ Pass |
+| Build macOS (x86_64) | ✅ Pass |
+| Build Flatpak | ❌ Fail (pre-existing upstream issue) |
+| CI Status | ✅ Pass |
+| Code Quality Checks | ✅ Pass |
+| GitGuardian | ✅ Pass |
+| Snyk | ✅ Pass |
+| Dependabot | ✅ Pass |
+
+**Note**: Flatpak build fails on `appstream-flathub-manifest-url-not-reachable` because the metainfo XML references upstream `obsproject/obs-studio` release URLs that don't exist for fork versions. This is a pre-existing issue inherent to forking OBS Studio.
+
+### 3.3 Issues Fixed in PR #15
 
 | Issue | Fix | File |
 |-------|-----|------|
