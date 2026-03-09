@@ -61,13 +61,55 @@ jobs:
           sudo apt-get install -y \
             build-essential \
             cmake \
+            extra-cmake-modules \
             pkg-config \
             libgl1-mesa-dev \
+            libglu1-mesa-dev \
             libx11-dev \
             libx11-xcb-dev \
+            libxcb-dri3-dev \
             libxcb-randr0-dev \
+            libxcb-shm0-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xinerama0-dev \
+            libxcb-composite0-dev \
+            libxcb1-dev \
+            libxcb-xinput-dev \
+            libxcomposite-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libxkbcommon-dev \
             libpulse-dev \
-            libasound2-dev
+            libasound2-dev \
+            libjack-dev \
+            libavcodec-dev \
+            libavdevice-dev \
+            libavfilter-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswresample-dev \
+            libswscale-dev \
+            libcurl4-openssl-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libluajit-5.1-dev \
+            libpci-dev \
+            libpipewire-0.3-dev \
+            librist-dev \
+            libsrt-openssl-dev \
+            libspeexdsp-dev \
+            libudev-dev \
+            libv4l-dev \
+            libvlc-dev \
+            libwayland-dev \
+            libx264-dev \
+            libdrm-dev \
+            libglib2.0-dev \
+            libva-dev \
+            libsimde-dev \
+            uthash-dev \
+            libjansson-dev
 
       - name: Build Project (C++) 🏗️
         if: matrix.language == 'cpp'
@@ -75,8 +117,16 @@ jobs:
           cmake -B build \
             -DCMAKE_BUILD_TYPE=Debug \
             -DENABLE_UI=OFF \
-            -DBUILD_TESTING=OFF
-          cmake --build build --parallel $(nproc) --target obs
+            -DENABLE_FRONTEND=OFF \
+            -DENABLE_SCRIPTING=OFF \
+            -DBUILD_TESTING=OFF \
+            -DENABLE_AJA=OFF \
+            -DENABLE_DECKLINK=OFF \
+            -DENABLE_NVENC=OFF \
+            -DENABLE_QSV11=OFF \
+            -DENABLE_VST=OFF \
+            -DENABLE_WEBRTC=OFF
+          cmake --build build --parallel $(nproc)
 
       - name: Perform CodeQL Analysis 🔍
         uses: github/codeql-action/analyze@v3
