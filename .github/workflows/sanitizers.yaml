@@ -30,11 +30,56 @@ jobs:
             build-essential \
             cmake \
             clang \
+            extra-cmake-modules \
+            libsimde-dev \
+            uthash-dev \
+            libjansson-dev \
             pkg-config \
             libgl1-mesa-dev \
+            libglu1-mesa-dev \
             libx11-dev \
+            libx11-xcb-dev \
+            libxcb-dri3-dev \
+            libxcb-randr0-dev \
+            libxcb-shm0-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xinerama0-dev \
+            libxcb-xinput-dev \
+            libxcb-composite0-dev \
+            libxcomposite-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxi-dev \
             libpulse-dev \
-            libasound2-dev
+            libasound2-dev \
+            libjack-dev \
+            libavcodec-dev \
+            libavdevice-dev \
+            libavfilter-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswresample-dev \
+            libswscale-dev \
+            libcurl4-openssl-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libluajit-5.1-dev \
+            libpci-dev \
+            libpipewire-0.3-dev \
+            librist-dev \
+            libsrt-openssl-dev \
+            libspeexdsp-dev \
+            libudev-dev \
+            libv4l-dev \
+            libvlc-dev \
+            libwayland-dev \
+            libxkbcommon-dev \
+            libx264-dev \
+            libxcb1-dev \
+            libdrm-dev \
+            libglib2.0-dev \
+            libclang-dev \
+            libva-dev
 
       - name: Configure with ASan 🔧
         run: |
@@ -42,9 +87,15 @@ jobs:
             -DCMAKE_C_COMPILER=clang \
             -DCMAKE_CXX_COMPILER=clang++ \
             -DCMAKE_BUILD_TYPE=Debug \
-            -DENABLE_UI=OFF \
+            -DENABLE_UI=OFF -DENABLE_FRONTEND=OFF \
             -DENABLE_ASAN=ON \
-            -DBUILD_TESTING=ON
+            -DBUILD_TESTING=ON \
+            -DENABLE_AJA=OFF \
+            -DENABLE_DECKLINK=OFF \
+            -DENABLE_NVENC=OFF \
+            -DENABLE_QSV11=OFF \
+            -DENABLE_VST=OFF \
+            -DENABLE_WEBRTC=OFF
 
       - name: Build 🏗️
         run: cmake --build build --parallel $(nproc)
@@ -74,11 +125,56 @@ jobs:
             build-essential \
             cmake \
             clang \
+            extra-cmake-modules \
+            libsimde-dev \
+            uthash-dev \
+            libjansson-dev \
             pkg-config \
             libgl1-mesa-dev \
+            libglu1-mesa-dev \
             libx11-dev \
+            libx11-xcb-dev \
+            libxcb-dri3-dev \
+            libxcb-randr0-dev \
+            libxcb-shm0-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xinerama0-dev \
+            libxcb-xinput-dev \
+            libxcb-composite0-dev \
+            libxcomposite-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxi-dev \
             libpulse-dev \
-            libasound2-dev
+            libasound2-dev \
+            libjack-dev \
+            libavcodec-dev \
+            libavdevice-dev \
+            libavfilter-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswresample-dev \
+            libswscale-dev \
+            libcurl4-openssl-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libluajit-5.1-dev \
+            libpci-dev \
+            libpipewire-0.3-dev \
+            librist-dev \
+            libsrt-openssl-dev \
+            libspeexdsp-dev \
+            libudev-dev \
+            libv4l-dev \
+            libvlc-dev \
+            libwayland-dev \
+            libxkbcommon-dev \
+            libx264-dev \
+            libxcb1-dev \
+            libdrm-dev \
+            libglib2.0-dev \
+            libclang-dev \
+            libva-dev
 
       - name: Configure with UBSan 🔧
         run: |
@@ -86,9 +182,15 @@ jobs:
             -DCMAKE_C_COMPILER=clang \
             -DCMAKE_CXX_COMPILER=clang++ \
             -DCMAKE_BUILD_TYPE=Debug \
-            -DENABLE_UI=OFF \
+            -DENABLE_UI=OFF -DENABLE_FRONTEND=OFF \
             -DENABLE_UBSAN=ON \
-            -DBUILD_TESTING=ON
+            -DBUILD_TESTING=ON \
+            -DENABLE_AJA=OFF \
+            -DENABLE_DECKLINK=OFF \
+            -DENABLE_NVENC=OFF \
+            -DENABLE_QSV11=OFF \
+            -DENABLE_VST=OFF \
+            -DENABLE_WEBRTC=OFF
 
       - name: Build 🏗️
         run: cmake --build build --parallel $(nproc)
@@ -118,11 +220,56 @@ jobs:
             build-essential \
             cmake \
             clang \
+            extra-cmake-modules \
+            libsimde-dev \
+            uthash-dev \
+            libjansson-dev \
             pkg-config \
             libgl1-mesa-dev \
+            libglu1-mesa-dev \
             libx11-dev \
+            libx11-xcb-dev \
+            libxcb-dri3-dev \
+            libxcb-randr0-dev \
+            libxcb-shm0-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xinerama0-dev \
+            libxcb-xinput-dev \
+            libxcb-composite0-dev \
+            libxcomposite-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxi-dev \
             libpulse-dev \
-            libasound2-dev
+            libasound2-dev \
+            libjack-dev \
+            libavcodec-dev \
+            libavdevice-dev \
+            libavfilter-dev \
+            libavformat-dev \
+            libavutil-dev \
+            libswresample-dev \
+            libswscale-dev \
+            libcurl4-openssl-dev \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libluajit-5.1-dev \
+            libpci-dev \
+            libpipewire-0.3-dev \
+            librist-dev \
+            libsrt-openssl-dev \
+            libspeexdsp-dev \
+            libudev-dev \
+            libv4l-dev \
+            libvlc-dev \
+            libwayland-dev \
+            libxkbcommon-dev \
+            libx264-dev \
+            libxcb1-dev \
+            libdrm-dev \
+            libglib2.0-dev \
+            libclang-dev \
+            libva-dev
 
       - name: Configure with TSan 🔧
         run: |
@@ -130,9 +277,15 @@ jobs:
             -DCMAKE_C_COMPILER=clang \
             -DCMAKE_CXX_COMPILER=clang++ \
             -DCMAKE_BUILD_TYPE=Debug \
-            -DENABLE_UI=OFF \
+            -DENABLE_UI=OFF -DENABLE_FRONTEND=OFF \
             -DENABLE_TSAN=ON \
-            -DBUILD_TESTING=ON
+            -DBUILD_TESTING=ON \
+            -DENABLE_AJA=OFF \
+            -DENABLE_DECKLINK=OFF \
+            -DENABLE_NVENC=OFF \
+            -DENABLE_QSV11=OFF \
+            -DENABLE_VST=OFF \
+            -DENABLE_WEBRTC=OFF
 
       - name: Build 🏗️
         run: cmake --build build --parallel $(nproc)

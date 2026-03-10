@@ -35,19 +35,19 @@ extern "C" {
  * to reduce pointer chasing in hot paths.
  */
 struct source_cached_props {
-    bool enabled;
-    bool active;
-    bool showing;
-    bool removed;
-    bool has_video;
-    bool has_audio;
-    bool is_filter;
-    bool is_input;
-    bool is_transition;
-    bool is_scene;
-    bool async_source;
-    uint32_t output_flags;
-    enum obs_source_type type;
+	bool enabled;
+	bool active;
+	bool showing;
+	bool removed;
+	bool has_video;
+	bool has_audio;
+	bool is_filter;
+	bool is_input;
+	bool is_transition;
+	bool is_scene;
+	bool async_source;
+	uint32_t output_flags;
+	enum obs_source_type type;
 };
 
 typedef struct source_cached_props source_cached_props_t;
@@ -64,28 +64,28 @@ typedef struct source_cached_props source_cached_props_t;
  */
 static inline void source_cache_props(obs_source_t *source, source_cached_props_t *cache)
 {
-    if (!source || !cache)
-        return;
-    
-    /* Cache basic state flags */
-    cache->enabled = source->enabled;
-    cache->active = source->active;
-    cache->showing = source->showing;
-    cache->removed = source->removed;
-    
-    /* Cache type info */
-    cache->type = source->info.type;
-    cache->output_flags = source->info.output_flags;
-    
-    /* Derived properties - computed once */
-    cache->is_filter = (cache->type == OBS_SOURCE_TYPE_FILTER);
-    cache->is_input = (cache->type == OBS_SOURCE_TYPE_INPUT);
-    cache->is_transition = (cache->type == OBS_SOURCE_TYPE_TRANSITION);
-    cache->is_scene = (cache->type == OBS_SOURCE_TYPE_SCENE);
-    
-    cache->has_video = (cache->output_flags & OBS_SOURCE_VIDEO) != 0;
-    cache->has_audio = (cache->output_flags & OBS_SOURCE_AUDIO) != 0;
-    cache->async_source = cache->is_input && (cache->output_flags & OBS_SOURCE_ASYNC) != 0;
+	if (!source || !cache)
+		return;
+
+	/* Cache basic state flags */
+	cache->enabled = source->enabled;
+	cache->active = source->active;
+	cache->showing = source->showing;
+	cache->removed = source->removed;
+
+	/* Cache type info */
+	cache->type = source->info.type;
+	cache->output_flags = source->info.output_flags;
+
+	/* Derived properties - computed once */
+	cache->is_filter = (cache->type == OBS_SOURCE_TYPE_FILTER);
+	cache->is_input = (cache->type == OBS_SOURCE_TYPE_INPUT);
+	cache->is_transition = (cache->type == OBS_SOURCE_TYPE_TRANSITION);
+	cache->is_scene = (cache->type == OBS_SOURCE_TYPE_SCENE);
+
+	cache->has_video = (cache->output_flags & OBS_SOURCE_VIDEO) != 0;
+	cache->has_audio = (cache->output_flags & OBS_SOURCE_AUDIO) != 0;
+	cache->async_source = cache->is_input && (cache->output_flags & OBS_SOURCE_ASYNC) != 0;
 }
 
 /**
@@ -96,10 +96,10 @@ static inline void source_cache_props(obs_source_t *source, source_cached_props_
  */
 static inline bool source_can_render_video(const source_cached_props_t *cache)
 {
-    if (!cache)
-        return false;
-    
-    return !cache->is_filter && cache->has_video;
+	if (!cache)
+		return false;
+
+	return !cache->is_filter && cache->has_video;
 }
 
 /**
@@ -110,10 +110,10 @@ static inline bool source_can_render_video(const source_cached_props_t *cache)
  */
 static inline bool source_should_skip_render(const source_cached_props_t *cache)
 {
-    if (!cache)
-        return true;
-    
-    return cache->removed || !cache->enabled;
+	if (!cache)
+		return true;
+
+	return cache->removed || !cache->enabled;
 }
 
 /**
@@ -124,10 +124,10 @@ static inline bool source_should_skip_render(const source_cached_props_t *cache)
  */
 static inline bool source_needs_async_update(const source_cached_props_t *cache)
 {
-    if (!cache)
-        return false;
-    
-    return cache->async_source && !cache->is_filter;
+	if (!cache)
+		return false;
+
+	return cache->async_source && !cache->is_filter;
 }
 
 /**
@@ -139,10 +139,10 @@ static inline bool source_needs_async_update(const source_cached_props_t *cache)
  */
 static inline bool source_has_filters(obs_source_t *source, const source_cached_props_t *cache)
 {
-    if (!source || !cache)
-        return false;
-    
-    return source->filters.num > 0 && !source->rendering_filter;
+	if (!source || !cache)
+		return false;
+
+	return source->filters.num > 0 && !source->rendering_filter;
 }
 
 #ifdef __cplusplus

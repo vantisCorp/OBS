@@ -1,80 +1,95 @@
-# CI/CD Requirements for vantisCorp/OBS
+# CI/CD Requirements for vantisCorp/OBS---Test-unofficial
 
 ## Current Status
 
-This repository is **private** and owned by a **user account** (not an organization).
+This repository is **public** and owned by a **user account** (vantisCorp).
+GitHub Actions is fully available for public repositories with unlimited minutes on standard runners.
 
-## GitHub Actions Requirements
+## CI/CD Workflows
 
-For private repositories, GitHub Actions requires one of the following:
+The following workflows are configured:
 
-| Plan | Actions Minutes | Storage |
-|------|----------------|---------|
-| GitHub Free | ❌ Not available | ❌ Not available |
-| GitHub Pro | 3,000 minutes/month | 2GB |
-| GitHub Team | 3,000 minutes/month | 2GB |
-| GitHub Enterprise | 50,000 minutes/month | 50GB |
+| Workflow | File | Trigger | Purpose |
+|----------|------|---------|---------|
+| Build Project | `build-project.yaml` | PR, push to master | Full multi-platform build (Linux, macOS, Windows, Flatpak) |
+| Run Tests | `tests.yaml` | PR, push to master | Unit tests with CMocka |
+| Sanitizers | `sanitizers.yaml` | PR, push to master | ASan, UBSan, TSan builds |
+| Benchmarks | `benchmarks.yaml` | PR, push to master | Performance benchmark suite |
+| CodeQL | `codeql.yaml` | PR, push to master, weekly | Security analysis (C++, Python) |
+| CI Minimal | `ci-minimal.yaml` | PR, push to master | Quick status check |
+| Pull (Format) | `pull.yaml` | PR | clang-format, gersemi, flatpak, Qt XML validation |
+| Code Quality | `code-quality.yaml` | PR, push to master | Code quality checks |
 
-## Current Issue
+## Required Dependencies (Linux)
 
-All workflow runs are failing with:
-- `runner_id: 0`
-- `steps: []`
-- Duration: 2-8 seconds
+The following system packages are required for building on Ubuntu:
 
-This indicates the runner cannot be allocated due to billing restrictions.
+### Core Build Tools
+- `build-essential`, `cmake`, `extra-cmake-modules`, `pkg-config`, `clang`, `clang-format`
 
-## Solutions
+### Graphics & Display
+- `libgl1-mesa-dev`, `libglu1-mesa-dev`, `libdrm-dev`
+- `libx11-dev`, `libx11-xcb-dev`, `libxcb-dri3-dev`, `libxcb-randr0-dev`
+- `libxcb-shm0-dev`, `libxcb-xfixes0-dev`, `libxcb-xinerama0-dev`
+- `libxcb-composite0-dev`, `libxcb1-dev`, `libxcb-xinput-dev`
+- `libxcomposite-dev`, `libxinerama-dev`, `libxrandr-dev`, `libxi-dev`
+- `libxkbcommon-dev`, `libwayland-dev`
 
-### Option 1: Upgrade GitHub Plan
-Upgrade to GitHub Pro or Team to get Actions minutes for private repositories.
+### Audio
+- `libpulse-dev`, `libasound2-dev`, `libjack-dev`, `libspeexdsp-dev`
 
-**Steps:**
-1. Go to GitHub Settings → Billing
-2. Upgrade to GitHub Pro or Team
-3. Actions will automatically work
+### Video/Media
+- `libavcodec-dev`, `libavdevice-dev`, `libavfilter-dev`, `libavformat-dev`
+- `libavutil-dev`, `libswresample-dev`, `libswscale-dev`
+- `libv4l-dev`, `libvlc-dev`, `libx264-dev`, `libva-dev`
 
-### Option 2: Make Repository Public
-Public repositories get free GitHub Actions.
+### Networking
+- `libcurl4-openssl-dev`, `librist-dev`, `libsrt-openssl-dev`
 
-**Steps:**
-1. Go to Repository Settings
-2. Scroll to "Danger Zone"
-3. Click "Change visibility"
-4. Select "Make public"
+### Other
+- `libfontconfig1-dev`, `libfreetype6-dev`, `libluajit-5.1-dev`
+- `libpci-dev`, `libpipewire-0.3-dev`, `libudev-dev`
+- `libglib2.0-dev`, `libclang-dev`
+- `libsimde-dev`, `uthash-dev`, `libjansson-dev`
 
-**Warning:** This will make all code publicly accessible.
+## CMake Configuration Flags
 
-### Option 3: Self-Hosted Runners
-Add your own runners to execute workflows.
+For CI builds without UI/frontend:
 
-**Steps:**
-1. Go to Repository Settings → Actions → Runners
-2. Click "New self-hosted runner"
-3. Follow the setup instructions
-4. Update workflows to use `runs-on: self-hosted`
+```bash
+cmake -B build \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENABLE_UI=OFF \
+  -DENABLE_FRONTEND=OFF \
+  -DBUILD_TESTING=ON \
+  -DENABLE_AJA=OFF \
+  -DENABLE_DECKLINK=OFF \
+  -DENABLE_NVENC=OFF \
+  -DENABLE_QSV11=OFF \
+  -DENABLE_VST=OFF \
+  -DENABLE_WEBRTC=OFF
+```
 
-## Workflow Files Updated
+## Security Scanning
 
-The following changes were made to improve compatibility:
+| Tool | Purpose | Configuration |
+|------|---------|---------------|
+| CodeQL | Static analysis for C++ and Python | `.github/workflows/codeql.yaml` |
+| GitGuardian | Secret detection | External integration |
+| Snyk | Dependency vulnerability scanning | External integration |
+| Dependabot | Automated dependency updates | `.github/dependabot.yml` |
 
-| File | Change |
-|------|--------|
-| `build-project.yaml` | `ubuntu-24.04` → `ubuntu-latest` |
-| `build-project.yaml` | `macos-15` → `macos-latest` |
-| `build-project.yaml` | `Xcode_26.1` → `Xcode_15.2` |
-| All workflows | `windows-2022` → `windows-latest` |
-| `tests.yaml` | Added proper permissions |
-| `ci-minimal.yaml` | New minimal workflow with status reporting |
+## Branch Protection (Recommended)
 
-## Verifying CI/CD
+The `master` branch should have the following protections enabled:
 
-After enabling Actions:
+- Require pull request reviews before merging
+- Require status checks to pass (CI Minimal, Tests, Sanitizers)
+- Require branches to be up to date before merging
+- Restrict who can push to matching branches
 
-1. Push a commit to master
-2. Check the Actions tab
-3. Verify all jobs complete successfully
+## Versioning
 
-## Contact
-
-For billing questions, contact GitHub Support.
+This fork uses: `{upstream_version}-vantis.{patch_number}`
+- Example: `32.0.4-vantis.11`
+- See `CHANGELOG_VANTIS.md` for release history

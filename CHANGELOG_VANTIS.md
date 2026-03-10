@@ -1,9 +1,44 @@
-# Changelog - vantisCorp/OBS
+# Changelog - vantisCorp/OBS---Test-unofficial
 
 All notable changes to this fork will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased] - fix/add-extra-cmake-modules branch
+
+### Fixed
+- **CodeQL Workflow**: Added all missing build dependencies and CMake flags
+- **clang-format**: Formatted all 18 modified files to pass CI checks
+- **Tests Workflow**: Added `libxkbcommon-dev`, `uthash-dev`, `libjansson-dev` dependencies
+- **Benchmark Build**: Fixed compilation errors (const char*, unused variables, missing includes)
+- **CMakeLists.txt**: Added benchmark subdirectory for build inclusion
+- **End-of-file**: Added missing newlines to 20+ source/header files
+
+### Changed
+- **README.rst**: Fixed repository URLs and added CI badges
+- **CHANGELOG_VANTIS.md**: Updated with missing version entries
+- **CodeQL workflow**: Full dependency parity with tests workflow
+
+### Added
+- **SECURITY.md**: Security policy and vulnerability reporting guidelines
+- **CODEOWNERS**: Code ownership definitions for review routing
+- **.github/dependabot.yml**: Automated dependency update configuration
+
+## [32.0.4-vantis.11] - 2026-03-08
+
+### Fixed
+- **CI/CD**: Removed hardcoded Windows SDK version for CI compatibility (PR #12)
+
+## [32.0.4-vantis.10] - 2026-03-08
+
+### Fixed
+- **CI/CD**: Install SIMDe from GitHub for Linux builds
+- **CI/CD**: Added `simde-dev` dependency for SIMD Everywhere support
+- **CI/CD**: Added `extra-cmake-modules` dependency for Linux builds
+
+### Changed
+- Updated CHANGELOG with vantis.8 and vantis.9 releases
 
 ## [32.0.4-vantis.9] - 2026-03-08
 
@@ -60,6 +95,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CI/CD workflow permissions for private repo compatibility
 - Changed ubuntu-24.04 to ubuntu-latest for better runner availability
 
+## [32.0.4-vantis.4] - 2026-03-08
+
+### Added
+- **Phase 4 Development Plan**: Added `FAZA4_PLAN.md` with hot path optimizations roadmap
+
+### Changed
+- Updated CI/CD workflow permissions for private repo compatibility
+- Changed `ubuntu-24.04` to `ubuntu-latest` for better runner availability
+
+### Documentation
+- Updated CHANGELOG with phases 1-3 and vantis.3 release
+
 ## [32.0.4-vantis.3] - 2026-03-08
 
 ### Added
@@ -112,32 +159,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Added input validation for RTMP error responses
 
-## [Unreleased]
-
-### Added
-- GitHub Issue templates (bug report, feature request)
-- CI/CD workflow for automated testing (`tests.yaml`)
-- Pre-commit hooks configuration for code quality
-- This CHANGELOG file
-
-### Fixed
-- **Critical**: Fix null pointer dereference in RTMP error handling (issue #13144)
-  - Added null check for `description` parameter in `PublisherAuth()` function
-  - Added guard before calling `PublisherAuth()` when description field is missing
-  - Prevents segfault when RTMP server sends error without description field
-
-### Changed
-- Improved error logging for missing RTMP error descriptions
-
-### Security
-- Added input validation for RTMP error responses
-
-## [32.0.4-vantis.1] - 2026-03-07
-
-### Added
-- Initial fork from obsproject/obs-studio
-- Repository analysis and improvement recommendations
-
 ---
 
 ## Versioning Scheme
@@ -149,3 +170,8 @@ This fork uses the following versioning scheme:
 ## Contributing
 
 See [CONTRIBUTING.rst](CONTRIBUTING.rst) for guidelines on contributing to this project.
+
+## Links
+
+- Repository: https://github.com/vantisCorp/OBS---Test-unofficial
+- Upstream: https://github.com/obsproject/obs-studio

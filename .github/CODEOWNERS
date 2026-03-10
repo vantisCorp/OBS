@@ -1,0 +1,31 @@
+# CODEOWNERS - vantisCorp/OBS---Test-unofficial
+# These owners will be automatically requested for review on PRs.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @vantisCorp
+
+# CI/CD workflows
+.github/ @vantisCorp
+
+# Core library - performance optimizations
+libobs/util/audio-mixing.* @vantisCorp
+libobs/util/source-cache.* @vantisCorp
+libobs/util/spsc-queue.* @vantisCorp
+libobs/util/memory-pool.* @vantisCorp
+libobs/util/memory-pool-fixed.* @vantisCorp
+
+# Benchmarks
+benchmark/ @vantisCorp
+
+# Tests
+test/ @vantisCorp
+
+# Build system
+CMakeLists.txt @vantisCorp
+CMakePresets.json @vantisCorp
+
+# Documentation
+*.md @vantisCorp
+*.rst @vantisCorp
+docs/ @vantisCorp

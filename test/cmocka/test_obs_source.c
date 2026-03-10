@@ -94,12 +94,9 @@ static void test_obs_source_capabilities(void **state)
 int main(void)
 {
 	const struct CMUnitTest tests[] = {
-		cmocka_unit_test(test_obs_source_create_release),
-		cmocka_unit_test(test_obs_source_flags),
-		cmocka_unit_test(test_obs_source_output_flags),
-		cmocka_unit_test(test_obs_source_type_values),
-		cmocka_unit_test(test_obs_source_info_defaults),
-		cmocka_unit_test(test_obs_source_capabilities),
+		cmocka_unit_test(test_obs_source_create_release), cmocka_unit_test(test_obs_source_flags),
+		cmocka_unit_test(test_obs_source_output_flags),   cmocka_unit_test(test_obs_source_type_values),
+		cmocka_unit_test(test_obs_source_info_defaults),  cmocka_unit_test(test_obs_source_capabilities),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

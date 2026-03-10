@@ -208,16 +208,11 @@ static void test_obs_data_clear(void **state)
 int main(void)
 {
 	const struct CMUnitTest tests[] = {
-		cmocka_unit_test(test_obs_data_create_destroy),
-		cmocka_unit_test(test_obs_data_set_get_string),
-		cmocka_unit_test(test_obs_data_set_get_int),
-		cmocka_unit_test(test_obs_data_set_get_double),
-		cmocka_unit_test(test_obs_data_set_get_bool),
-		cmocka_unit_test(test_obs_data_nested),
-		cmocka_unit_test(test_obs_data_array),
-		cmocka_unit_test(test_obs_data_json),
-		cmocka_unit_test(test_obs_data_defaults),
-		cmocka_unit_test(test_obs_data_clear),
+		cmocka_unit_test(test_obs_data_create_destroy), cmocka_unit_test(test_obs_data_set_get_string),
+		cmocka_unit_test(test_obs_data_set_get_int),    cmocka_unit_test(test_obs_data_set_get_double),
+		cmocka_unit_test(test_obs_data_set_get_bool),   cmocka_unit_test(test_obs_data_nested),
+		cmocka_unit_test(test_obs_data_array),          cmocka_unit_test(test_obs_data_json),
+		cmocka_unit_test(test_obs_data_defaults),       cmocka_unit_test(test_obs_data_clear),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

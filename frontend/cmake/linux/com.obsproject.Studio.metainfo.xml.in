@@ -29,10 +29,10 @@
     </ul>
   </description>
   <url type="homepage">https://obsproject.com</url>
-  <url type="bugtracker">https://github.com/obsproject/obs-studio/issues</url>
+  <url type="bugtracker">https://github.com/vantisCorp/OBS---Test-unofficial/issues</url>
   <url type="donation">https://obsproject.com/contribute</url>
   <url type="translate">https://crowdin.com/project/obs-studio</url>
-  <url type="vcs-browser">https://github.com/obsproject/obs-studio</url>
+  <url type="vcs-browser">https://github.com/vantisCorp/OBS---Test-unofficial</url>
 
   <recommends>
     <internet>always</internet>
@@ -60,7 +60,7 @@
 
   <releases>
     <release version="@OBS_VERSION@" date="@APPDATA_RELEASE_DATE@">
-      <url type="details">https://github.com/obsproject/obs-studio/releases/tag/@OBS_VERSION@</url>
+      <url type="details">https://github.com/vantisCorp/OBS---Test-unofficial/releases</url>
     </release>
   </releases>
   <custom>

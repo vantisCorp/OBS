@@ -89,12 +89,9 @@ static void test_encoder_caps(void **state)
 int main(void)
 {
 	const struct CMUnitTest tests[] = {
-		cmocka_unit_test(test_obs_output_state_values),
-		cmocka_unit_test(test_obs_output_flags),
-		cmocka_unit_test(test_obs_output_info_defaults),
-		cmocka_unit_test(test_video_output_info),
-		cmocka_unit_test(test_audio_output_info),
-		cmocka_unit_test(test_encoder_caps),
+		cmocka_unit_test(test_obs_output_state_values),  cmocka_unit_test(test_obs_output_flags),
+		cmocka_unit_test(test_obs_output_info_defaults), cmocka_unit_test(test_video_output_info),
+		cmocka_unit_test(test_audio_output_info),        cmocka_unit_test(test_encoder_caps),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

@@ -32,6 +32,11 @@ add_subdirectory(plugins)
 
 add_subdirectory(test/test-input)
 
+# Add benchmarks if enabled
+if(ENABLE_BENCHMARKS)
+  add_subdirectory(benchmark)
+endif()
+
 add_subdirectory(frontend)
 
 message_configuration()

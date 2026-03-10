@@ -83,26 +83,34 @@ jobs:
             libx264-dev \
             libxcb1-dev \
             libxcb-xinput-dev \
+            libxkbcommon-dev \
+            libxcb-composite0-dev \
             libdrm-dev \
             libglib2.0-dev \
             libclang-dev \
+            libva-dev \
             clang \
             clang-format
 
       - name: Install SIMDe 📦
         if: runner.os == 'Linux'
         run: |
-          git clone --depth 1 https://github.com/simd-everywhere/simde-no-dependencies.git /tmp/simde
-          sudo cp -r /tmp/simde/simde /usr/local/include/
+          sudo apt-get install -y libsimde-dev uthash-dev libjansson-dev
 
       - name: Configure CMake 🔧
         run: |
           cmake -B build \
             -G "${{ matrix.cmake_generator }}" \
             -DCMAKE_BUILD_TYPE=Debug \
-            -DENABLE_UI=OFF \
+            -DENABLE_UI=OFF -DENABLE_FRONTEND=OFF \
             -DENABLE_SCRIPTING=ON \
-            -DBUILD_TESTING=ON
+            -DBUILD_TESTING=ON \
+            -DENABLE_AJA=OFF \
+            -DENABLE_DECKLINK=OFF \
+            -DENABLE_NVENC=OFF \
+            -DENABLE_QSV11=OFF \
+            -DENABLE_VST=OFF \
+            -DENABLE_WEBRTC=OFF
 
       - name: Build 🏗️
         run: cmake --build build --config Debug --parallel $(nproc)
@@ -172,7 +180,7 @@ jobs:
             -G "Visual Studio 17 2022" `
             -A x64 `
             -DCMAKE_BUILD_TYPE=Debug `
-            -DENABLE_UI=OFF `
+            -DENABLE_UI=OFF -DENABLE_FRONTEND=OFF `
             -DBUILD_TESTING=ON
 
       - name: Build 🏗️

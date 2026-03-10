@@ -44,13 +44,13 @@ extern "C" {
  */
 
 struct spsc_queue {
-    uint8_t *buffer;           /* Ring buffer storage */
-    size_t capacity;           /* Buffer capacity (must be power of 2) */
-    size_t element_size;       /* Size of each element */
-    
-    /* Atomic head/tail for lock-free operation */
-    atomic_size_t head;        /* Write position (producer) */
-    atomic_size_t tail;        /* Read position (consumer) */
+	uint8_t *buffer;     /* Ring buffer storage */
+	size_t capacity;     /* Buffer capacity (must be power of 2) */
+	size_t element_size; /* Size of each element */
+
+	/* Atomic head/tail for lock-free operation */
+	atomic_size_t head; /* Write position (producer) */
+	atomic_size_t tail; /* Read position (consumer) */
 };
 
 typedef struct spsc_queue spsc_queue_t;
@@ -65,24 +65,24 @@ typedef struct spsc_queue spsc_queue_t;
  */
 static inline bool spsc_queue_init(spsc_queue_t *queue, size_t element_size, size_t capacity)
 {
-    if (!queue || element_size == 0 || capacity == 0)
-        return false;
-    
-    /* Round capacity up to power of 2 for efficient modulo */
-    size_t cap = 1;
-    while (cap < capacity)
-        cap *= 2;
-    
-    queue->buffer = (uint8_t *)bzalloc(cap * element_size);
-    if (!queue->buffer)
-        return false;
-    
-    queue->capacity = cap;
-    queue->element_size = element_size;
-    atomic_init(&queue->head, 0);
-    atomic_init(&queue->tail, 0);
-    
-    return true;
+	if (!queue || element_size == 0 || capacity == 0)
+		return false;
+
+	/* Round capacity up to power of 2 for efficient modulo */
+	size_t cap = 1;
+	while (cap < capacity)
+		cap *= 2;
+
+	queue->buffer = (uint8_t *)bzalloc(cap * element_size);
+	if (!queue->buffer)
+		return false;
+
+	queue->capacity = cap;
+	queue->element_size = element_size;
+	atomic_init(&queue->head, 0);
+	atomic_init(&queue->tail, 0);
+
+	return true;
 }
 
 /**
@@ -92,15 +92,15 @@ static inline bool spsc_queue_init(spsc_queue_t *queue, size_t element_size, siz
  */
 static inline void spsc_queue_free(spsc_queue_t *queue)
 {
-    if (!queue)
-        return;
-    
-    bfree(queue->buffer);
-    queue->buffer = NULL;
-    queue->capacity = 0;
-    queue->element_size = 0;
-    atomic_store(&queue->head, 0);
-    atomic_store(&queue->tail, 0);
+	if (!queue)
+		return;
+
+	bfree(queue->buffer);
+	queue->buffer = NULL;
+	queue->capacity = 0;
+	queue->element_size = 0;
+	atomic_store(&queue->head, 0);
+	atomic_store(&queue->tail, 0);
 }
 
 /**
@@ -108,7 +108,7 @@ static inline void spsc_queue_free(spsc_queue_t *queue)
  */
 static inline size_t spsc_queue_mask(const spsc_queue_t *queue, size_t index)
 {
-    return index & (queue->capacity - 1);
+	return index & (queue->capacity - 1);
 }
 
 /**
@@ -120,24 +120,24 @@ static inline size_t spsc_queue_mask(const spsc_queue_t *queue, size_t index)
  */
 static inline bool spsc_queue_push(spsc_queue_t *queue, const void *element)
 {
-    if (!queue || !element)
-        return false;
-    
-    size_t head = atomic_load_explicit(&queue->head, memory_order_relaxed);
-    size_t tail = atomic_load_explicit(&queue->tail, memory_order_acquire);
-    
-    /* Check if queue is full */
-    if ((head - tail) >= queue->capacity)
-        return false;
-    
-    /* Copy element to buffer */
-    size_t index = spsc_queue_mask(queue, head);
-    memcpy(queue->buffer + index * queue->element_size, element, queue->element_size);
-    
-    /* Publish the new head */
-    atomic_store_explicit(&queue->head, head + 1, memory_order_release);
-    
-    return true;
+	if (!queue || !element)
+		return false;
+
+	size_t head = atomic_load_explicit(&queue->head, memory_order_relaxed);
+	size_t tail = atomic_load_explicit(&queue->tail, memory_order_acquire);
+
+	/* Check if queue is full */
+	if ((head - tail) >= queue->capacity)
+		return false;
+
+	/* Copy element to buffer */
+	size_t index = spsc_queue_mask(queue, head);
+	memcpy(queue->buffer + index * queue->element_size, element, queue->element_size);
+
+	/* Publish the new head */
+	atomic_store_explicit(&queue->head, head + 1, memory_order_release);
+
+	return true;
 }
 
 /**
@@ -149,24 +149,24 @@ static inline bool spsc_queue_push(spsc_queue_t *queue, const void *element)
  */
 static inline bool spsc_queue_pop(spsc_queue_t *queue, void *element)
 {
-    if (!queue || !element)
-        return false;
-    
-    size_t tail = atomic_load_explicit(&queue->tail, memory_order_relaxed);
-    size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
-    
-    /* Check if queue is empty */
-    if (head == tail)
-        return false;
-    
-    /* Copy element from buffer */
-    size_t index = spsc_queue_mask(queue, tail);
-    memcpy(element, queue->buffer + index * queue->element_size, queue->element_size);
-    
-    /* Publish the new tail */
-    atomic_store_explicit(&queue->tail, tail + 1, memory_order_release);
-    
-    return true;
+	if (!queue || !element)
+		return false;
+
+	size_t tail = atomic_load_explicit(&queue->tail, memory_order_relaxed);
+	size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
+
+	/* Check if queue is empty */
+	if (head == tail)
+		return false;
+
+	/* Copy element from buffer */
+	size_t index = spsc_queue_mask(queue, tail);
+	memcpy(element, queue->buffer + index * queue->element_size, queue->element_size);
+
+	/* Publish the new tail */
+	atomic_store_explicit(&queue->tail, tail + 1, memory_order_release);
+
+	return true;
 }
 
 /**
@@ -178,19 +178,19 @@ static inline bool spsc_queue_pop(spsc_queue_t *queue, void *element)
  */
 static inline bool spsc_queue_peek(const spsc_queue_t *queue, void *element)
 {
-    if (!queue || !element)
-        return false;
-    
-    size_t tail = atomic_load_explicit(&queue->tail, memory_order_relaxed);
-    size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
-    
-    if (head == tail)
-        return false;
-    
-    size_t index = spsc_queue_mask(queue, tail);
-    memcpy(element, queue->buffer + index * queue->element_size, queue->element_size);
-    
-    return true;
+	if (!queue || !element)
+		return false;
+
+	size_t tail = atomic_load_explicit(&queue->tail, memory_order_relaxed);
+	size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
+
+	if (head == tail)
+		return false;
+
+	size_t index = spsc_queue_mask(queue, tail);
+	memcpy(element, queue->buffer + index * queue->element_size, queue->element_size);
+
+	return true;
 }
 
 /**
@@ -201,13 +201,13 @@ static inline bool spsc_queue_peek(const spsc_queue_t *queue, void *element)
  */
 static inline size_t spsc_queue_size(const spsc_queue_t *queue)
 {
-    if (!queue)
-        return 0;
-    
-    size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
-    size_t tail = atomic_load_explicit(&queue->tail, memory_order_acquire);
-    
-    return head - tail;
+	if (!queue)
+		return 0;
+
+	size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
+	size_t tail = atomic_load_explicit(&queue->tail, memory_order_acquire);
+
+	return head - tail;
 }
 
 /**
@@ -218,7 +218,7 @@ static inline size_t spsc_queue_size(const spsc_queue_t *queue)
  */
 static inline bool spsc_queue_empty(const spsc_queue_t *queue)
 {
-    return spsc_queue_size(queue) == 0;
+	return spsc_queue_size(queue) == 0;
 }
 
 /**
@@ -229,13 +229,13 @@ static inline bool spsc_queue_empty(const spsc_queue_t *queue)
  */
 static inline bool spsc_queue_full(const spsc_queue_t *queue)
 {
-    if (!queue)
-        return true;
-    
-    size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
-    size_t tail = atomic_load_explicit(&queue->tail, memory_order_acquire);
-    
-    return (head - tail) >= queue->capacity;
+	if (!queue)
+		return true;
+
+	size_t head = atomic_load_explicit(&queue->head, memory_order_acquire);
+	size_t tail = atomic_load_explicit(&queue->tail, memory_order_acquire);
+
+	return (head - tail) >= queue->capacity;
 }
 
 /**
@@ -246,7 +246,7 @@ static inline bool spsc_queue_full(const spsc_queue_t *queue)
  */
 static inline size_t spsc_queue_capacity(const spsc_queue_t *queue)
 {
-    return queue ? queue->capacity : 0;
+	return queue ? queue->capacity : 0;
 }
 
 /**
@@ -256,11 +256,11 @@ static inline size_t spsc_queue_capacity(const spsc_queue_t *queue)
  */
 static inline void spsc_queue_clear(spsc_queue_t *queue)
 {
-    if (!queue)
-        return;
-    
-    atomic_store(&queue->head, 0);
-    atomic_store(&queue->tail, 0);
+	if (!queue)
+		return;
+
+	atomic_store(&queue->head, 0);
+	atomic_store(&queue->tail, 0);
 }
 
 #ifdef __cplusplus
