@@ -62,21 +62,21 @@ jobs:
           subject-path: ${{ github.workspace }}/output/*-${{ matrix.architecture }}.zip
 
       - name: Upload Signed Build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: obs-studio-windows-${{ matrix.architecture }}-${{ github.ref_name }}-signed
           compression-level: 0
           path: ${{ github.workspace }}/output/*-${{ matrix.architecture }}.zip
 
       - name: Upload PDBs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: obs-studio-windows-${{ matrix.architecture }}-${{ github.ref_name }}-pdbs
           compression-level: 0
           path: ${{ github.workspace }}/output/*-pdbs.zip
 
       - name: Upload Installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: matrix.architecture == 'x64'
         with:
           name: obs-studio-windows-${{ matrix.architecture }}-${{ github.ref_name }}-installer
